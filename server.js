@@ -1,22 +1,37 @@
 require("dotenv").config();
+const mysql = require("mysql2");
 
-const app = require("./app");
-const db = require("./config/db");
+let connection;
 
-const PORT = process.env.PORT || 5000;
+if (process.env.DATABASE_URL) {
+  // Render / Production
+  const dbUrl = new URL(process.env.DATABASE_URL);
 
-const start = async () => {
-  try {
-    await db.query("SELECT 1");
-    console.log("Database connection established");
+  connection = mysql.createConnection({
+    host: dbUrl.hostname,
+    user: dbUrl.username,
+    password: dbUrl.password,
+    database: dbUrl.pathname.replace("/", ""),
+    port: dbUrl.port
+  });
 
-    app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
-    });
-  } catch (err) {
-    console.error("Failed to connect to database:", err.message);
+} else {
+  // Local development
+  connection = mysql.createConnection({
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    port: process.env.DB_PORT
+  });
+}
+
+connection.connect((err) => {
+  if (err) {
+    console.error("Database connection failed:", err);
     process.exit(1);
   }
-};
+  console.log("Database connection established");
+});
 
-start();
+module.exports = connection;
