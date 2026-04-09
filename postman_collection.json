@@ -1,0 +1,94 @@
+{
+  "info": {
+    "name": "School Management API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000"
+    }
+  ],
+  "item": [
+    {
+      "name": "Add School",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/addSchool",
+          "host": ["{{baseUrl}}"],
+          "path": ["addSchool"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"ABC School\",\n  \"address\": \"New Delhi\",\n  \"latitude\": 28.6139,\n  \"longitude\": 77.2090\n}"
+        }
+      },
+      "response": [
+        {
+          "name": "Success",
+          "status": "Created",
+          "code": 201,
+          "body": "{\n  \"success\": true,\n  \"message\": \"School added successfully\",\n  \"schoolId\": 1\n}"
+        },
+        {
+          "name": "Validation Error",
+          "status": "Bad Request",
+          "code": 400,
+          "body": "{\n  \"success\": false,\n  \"message\": \"\\\"name\\\" is not allowed to be empty\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "List Schools",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/listSchools?latitude=28.61&longitude=77.20",
+          "host": ["{{baseUrl}}"],
+          "path": ["listSchools"],
+          "query": [
+            { "key": "latitude",  "value": "28.61" },
+            { "key": "longitude", "value": "77.20" }
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "Success",
+          "status": "OK",
+          "code": 200,
+          "body": "[\n  {\n    \"id\": 1,\n    \"name\": \"ABC School\",\n    \"address\": \"New Delhi\",\n    \"latitude\": 28.6139,\n    \"longitude\": 77.209,\n    \"distance\": 0.44\n  },\n  {\n    \"id\": 2,\n    \"name\": \"Sunshine Academy\",\n    \"address\": \"Connaught Place\",\n    \"latitude\": 28.6315,\n    \"longitude\": 77.2167,\n    \"distance\": 2.38\n  }\n]"
+        },
+        {
+          "name": "Validation Error",
+          "status": "Bad Request",
+          "code": 400,
+          "body": "{\n  \"success\": false,\n  \"message\": \"\\\"latitude\\\" is required\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/health",
+          "host": ["{{baseUrl}}"],
+          "path": ["health"]
+        }
+      },
+      "response": [
+        {
+          "name": "OK",
+          "status": "OK",
+          "code": 200,
+          "body": "{ \"status\": \"ok\" }"
+        }
+      ]
+    }
+  ]
+}
